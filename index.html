@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Customizable Chatbot Widget</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      /* ============================
+         1. Customization Options
+         ============================ */
+
+      :root {
+        /* === Colors === */
+        --primary-color: #007bff; /* Primary brand color */
+        --background-color: #fff; /* Chatbot background color */
+        --text-color: #333; /* Default text color */
+        --user-message-bg: #efefef; /* User message background */
+        --assistant-message-bg: #007bff; /* Assistant message background */
+        --close-button-color: #ff0000; /* Close button hover color */
+        --badge-bg-color: red; /* Unread badge background */
+        --badge-text-color: white; /* Unread badge text color */
+
+        /* === Fonts === */
+        --font-family: "Poppins", sans-serif;
+        --font-size-base: 1rem; /* Base font size */
+        --font-size-small: 0.9rem; /* Small font size for messages */
+        --font-size-title: 1.2rem; /* Title font size */
+        --font-size-welcome: 0.875rem; /* Welcome message font size */
+
+        /* === Sizes === */
+        --chatbot-width: 30vw; /* Initial chatbot width */
+        --chatbot-height: 80vh; /* Chatbot height */
+        --chat-widget-size: 4rem; /* Chat widget icon size */
+
+        /* === Others === */
+        --border-radius: 10px; /* Border radius for chatbot */
+        --box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Chatbot shadow */
+      }
+
+      /* ============================
+         2. Base Styles
+         ============================ */
+
+      /* Import Google Fonts */
+      @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+      /* Reset and Base Styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: var(--font-family);
+      }
+
+      /* Chatbot Container */
+      .chatbot-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: var(--chatbot-width);
+        max-width: 90vw; /* Allows up to 90% of viewport width */
+        min-width: 300px;
+        height: var(--chatbot-height);
+        display: none; /* Hidden by default */
+        z-index: 9999;
+        box-shadow: var(--box-shadow);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        background-color: var(--background-color);
+
+        /* Animation for opening */
+        opacity: 0;
+        transform: scale(0.8);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+      }
+
+      /* Visible State */
+      .chatbot-container.show {
+        display: block;
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      /* Hidden State with Animation */
+      .chatbot-container.hide {
+        opacity: 0;
+        transform: scale(0.8);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+      }
+
+      /* Resize Handle */
+      .chatbot-container .resize-handle {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 5px;
+        height: 100%;
+        cursor: ew-resize;
+        z-index: 10;
+        background-color: transparent;
+      }
+
+      /* Wrapper for Flex Layout */
+      .wrapper {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        position: relative; /* Ensure positioning context for resize handle */
+      }
+
+      /* Title Bar */
+      .wrapper .title {
+        background: var(--primary-color);
+        color: white;
+        line-height: 2.5;
+        font-size: var(--font-size-title);
+        position: relative;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        padding: 0 10px;
+      }
+
+      /* Title Icon */
+      .title-icon {
+        width: 2.5rem;
+        height: 2.5rem;
+        margin-right: 10px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      /* Title Text */
+      .title-text {
+        /* Align text to the left */
+        text-align: left;
+        font-weight: bold;
+        flex-grow: 1;
+        font-size: var(--font-size-title);
+      }
+
+      /* Close Button */
+      .wrapper .title #close-chatbot {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+      }
+
+      .wrapper .title #close-chatbot svg {
+        cursor: pointer;
+        transition: transform 0.3s ease;
+      }
+
+      .wrapper .title #close-chatbot svg:hover {
+        color: var(--close-button-color);
+        transform: rotate(90deg);
+      }
+
+      /* Chat Messages Box */
+      .wrapper .box {
+        border: 1px solid #efefef;
+        padding: 10px 15px;
+        flex: 1;
+        overflow-y: auto;
+        background-color: #f9f9f9;
+        position: relative;
+      }
+
+      .wrapper .box .item {
+        display: flex;
+        margin: 10px 0;
+        animation: fadeIn 0.3s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Chatbot Message Styling */
+      .wrapper .box .item.left {
+        justify-content: flex-start;
+      }
+
+      .wrapper .box .item.left .icon {
+        background: var(--primary-color);
+        color: white;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+      }
+
+      .wrapper .box .item.left .msg {
+        background: var(--assistant-message-bg);
+        color: white;
+        border-radius: 10px;
+        max-width: 60%;
+        padding: 10px;
+        word-wrap: break-word;
+      }
+
+      /* Ensure <p> inherits color and reduce font size */
+      .wrapper .box .item.left .msg p {
+        color: inherit;
+        font-size: var(--font-size-small); /* Adjusted from default */
+      }
+
+      /* User Message Styling */
+      .wrapper .box .item.right {
+        justify-content: flex-end;
+      }
+
+      .wrapper .box .item.right .msg {
+        background: var(--user-message-bg);
+        color: var(--text-color);
+        border-radius: 10px;
+        max-width: 60%;
+        padding: 10px;
+        word-wrap: break-word;
+      }
+
+      /* Remove icon for user messages */
+      .wrapper .box .item.right .icon {
+        display: none;
+      }
+
+      /* Reduce user message font size */
+      .wrapper .box .item.right .msg p {
+        font-size: var(--font-size-small); /* Adjusted from default */
+      }
+
+      /* Typing Area */
+      .wrapper .typing-area {
+        width: 100%;
+        background: #efefef;
+        height: 3rem;
+        display: flex;
+        align-items: center;
+        padding: 0 10px;
+        flex-shrink: 0;
+      }
+
+      .wrapper .typing-area .input-field {
+        width: 100%;
+        position: relative;
+      }
+
+      .wrapper .typing-area .input-field input {
+        width: 100%;
+        padding: 0.5rem 3rem 0.5rem 0.5rem;
+        border: 1px solid transparent;
+        border-radius: 3px;
+        outline: none;
+        font-family: var(--font-family);
+        transition: 0.3s all ease;
+        font-size: 1rem;
+      }
+
+      .wrapper .typing-area .input-field input:focus {
+        border-color: var(--primary-color);
+      }
+
+      .wrapper .typing-area .input-field button {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        background: transparent;
+        border: 1px solid var(--primary-color);
+        padding: 0.3rem 0.7rem;
+        border-radius: 3px;
+        color: var(--primary-color);
+        outline: none;
+        cursor: pointer;
+        opacity: 0;
+        pointer-events: none;
+        transition: 0.3s all ease;
+        font-size: var(--font-size-small);
+      }
+
+      .wrapper .typing-area .input-field button:hover {
+        background: var(--primary-color);
+        color: white;
+      }
+
+      .wrapper .typing-area .input-field input:valid ~ button {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      /* Chat Widget Icon */
+      #chat-widget {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: var(--primary-color);
+        color: white;
+        width: var(--chat-widget-size);
+        height: var(--chat-widget-size);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 9999;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+
+        /* Add refined bounce animation */
+        animation: bounce 2s infinite;
+      }
+
+      /* Refined Bounce Animation Keyframes */
+      @keyframes bounce {
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+          transform: translateY(0);
+        }
+        40% {
+          transform: translateY(-10px);
+        }
+        60% {
+          transform: translateY(-5px);
+        }
+      }
+
+      /* Remove default margin/padding from SVGs */
+      #chat-widget svg,
+      .wrapper .box .item.left .icon svg {
+        margin: 0;
+        padding: 0;
+      }
+
+      #chat-widget svg {
+        width: 1.875rem;
+        height: 1.875rem;
+      }
+
+      #chat-widget:hover {
+        background-color: darken(var(--primary-color), 10%);
+      }
+
+      /* Loader Styling */
+      .loader {
+        display: none; /* Hidden by default */
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        bottom: 4rem; /* Position above the typing area */
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .loader.show {
+        display: flex;
+      }
+
+      .loader .dot {
+        width: 0.5rem;
+        height: 0.5rem;
+        margin: 0 0.2rem;
+        background-color: var(--primary-color);
+        border-radius: 50%;
+        animation: bounceDot 1.4s infinite ease-in-out both;
+      }
+
+      .loader .dot:nth-child(1) {
+        animation-delay: -0.32s;
+      }
+
+      .loader .dot:nth-child(2) {
+        animation-delay: -0.16s;
+      }
+
+      @keyframes bounceDot {
+        0%,
+        80%,
+        100% {
+          transform: scale(0);
+        }
+        40% {
+          transform: scale(1);
+        }
+      }
+
+      /* Badge for Unread Messages */
+      #chat-widget .badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: var(--badge-bg-color);
+        color: var(--badge-text-color);
+        border-radius: 50%;
+        width: 1.25rem;
+        height: 1.25rem;
+        text-align: center;
+        line-height: 1.25rem;
+        font-size: 0.75rem;
+        display: none;
+      }
+
+      /* Hidden State for Chat Widget Icon */
+      #chat-widget.hidden {
+        opacity: 0;
+        visibility: hidden;
+        transform: scale(0.5);
+        transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+
+        /* Stop bounce animation when hidden */
+        animation: none;
+      }
+
+      /* Welcome Message Styling */
+      .welcome-message {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin: 20px 0;
+      }
+
+      .welcome-icon {
+        width: 3.75rem; /* Adjust as needed */
+        height: 3.75rem; /* Adjust as needed */
+        margin-bottom: 10px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .welcome-message h2 {
+        font-size: 1.125rem;
+        margin-bottom: 5px;
+      }
+
+      .welcome-message p {
+        font-size: var(--font-size-welcome);
+        color: #555;
+      }
+
+      /* Resize Handle Hover Effect */
+      .resize-handle:hover {
+        background-color: rgba(0, 123, 255, 0.2);
+      }
+
+      /* Responsive Design */
+      @media (max-width: 1200px) and (min-width: 601px) {
+        /* Tablet Devices */
+        .chatbot-container {
+          width: 40vw;
+          max-width: 90vw; /* 90% of viewport width */
+          min-width: 300px;
+          height: 80vh;
+        }
+
+        .wrapper .title {
+          font-size: 1.1rem;
+        }
+
+        .title-text {
+          font-size: 1.1rem;
+        }
+
+        .welcome-message h2 {
+          font-size: 1.1rem;
+        }
+
+        .welcome-message p {
+          font-size: 0.9rem;
+        }
+
+        .wrapper .typing-area .input-field input {
+          font-size: 0.95rem;
+        }
+
+        .wrapper .typing-area .input-field button {
+          font-size: 0.85rem;
+        }
+
+        #chat-widget {
+          width: 4rem;
+          height: 4rem;
+        }
+
+        #chat-widget svg {
+          width: 1.875rem;
+          height: 1.875rem;
+        }
+      }
+
+      @media (max-width: 600px) {
+        /* Mobile Devices */
+        .chatbot-container {
+          width: 100%;
+          height: 100%;
+          right: 0;
+          bottom: 0;
+          border-radius: 0;
+          /* Adjust position for fullscreen */
+          top: 0;
+          left: 0;
+        }
+
+        #chat-widget {
+          width: 3rem;
+          height: 3rem;
+          animation: none; /* Remove animation for fullscreen */
+        }
+
+        #chat-widget svg {
+          width: 1.25rem;
+          height: 1.25rem;
+        }
+
+        .title-icon {
+          width: 2rem;
+          height: 2rem;
+        }
+
+        .welcome-icon {
+          width: 3rem;
+          height: 3rem;
+        }
+
+        .welcome-message h2 {
+          font-size: 1rem;
+        }
+
+        .welcome-message p {
+          font-size: 0.8rem;
+        }
+
+        .wrapper .title {
+          font-size: 1rem;
+        }
+
+        .wrapper .typing-area .input-field button {
+          padding: 0.2rem 0.5rem;
+          font-size: 0.8rem;
+        }
+
+        /* Hide resize handle on mobile */
+        .chatbot-container .resize-handle {
+          display: none;
+        }
+
+        /* Adjust chatbox padding for smaller screens */
+        .wrapper .box {
+          padding: 8px 12px;
+        }
+
+        /* Reduce typing area height */
+        .wrapper .typing-area {
+          height: 3rem;
+          padding: 0 8px;
+        }
+
+        /* Adjust message bubble max-width */
+        .wrapper .box .item.left .msg,
+        .wrapper .box .item.right .msg {
+          max-width: 80%;
+        }
+      }
+
+      @media (min-width: 1201px) {
+        /* Large Desktop Devices */
+        .chatbot-container {
+          width: 25vw;
+          max-width: 90vw; /* 90% of viewport width */
+          min-width: 300px;
+          height: 80vh;
+        }
+
+        .wrapper .title {
+          font-size: 1.2rem;
+        }
+
+        .title-text {
+          font-size: 1.2rem;
+        }
+
+        .welcome-message h2 {
+          font-size: 1.25rem;
+        }
+
+        .welcome-message p {
+          font-size: 1rem;
+        }
+
+        .wrapper .typing-area .input-field input {
+          font-size: 1rem;
+        }
+
+        .wrapper .typing-area .input-field button {
+          font-size: 0.9rem;
+        }
+
+        #chat-widget {
+          width: 4rem;
+          height: 4rem;
+        }
+
+        #chat-widget svg {
+          width: 1.875rem;
+          height: 1.875rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ============================
+       3. Chat Widget Icon
+       ============================ -->
+    <div id="chat-widget">
+      <!-- Chatbot SVG Icon -->
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="currentColor"
+        viewBox="0 0 16 16"
+        width="1.875rem"
+        height="1.875rem"
+        aria-label="Chat Icon"
+        role="img"
+      >
+        <path
+          d="M2 0a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2.5a1 1 0 0 1 .8.4l1.9 2.533a1 1 0 0 0 1.6 0l1.9-2.533a1 1 0 0 1 .8-.4H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"
+        ></path>
+      </svg>
+      <div class="badge" id="unread-count">1</div>
+    </div>
+
+    <!-- ============================
+       4. Chatbot Container
+       ============================ -->
+    <div class="chatbot-container" id="chatbot-container">
+      <!-- Resize Handle -->
+      <div class="resize-handle" id="resize-handle"></div>
+
+      <div class="wrapper">
+        <div class="title">
+          <!-- Title Icon -->
+          <img
+            src="https://via.placeholder.com/40"
+            alt="Chatbot Icon"
+            class="title-icon"
+          />
+          <!-- Title Text -->
+          <span class="title-text">Simple Chatbot</span>
+          <!-- Close Button -->
+          <span id="close-chatbot">
+            <!-- Close Icon SVG -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+              width="24"
+              height="24"
+              aria-label="Close"
+              role="img"
+            >
+              <path
+                d="M4.646 4.646a.5.5 0 1 1 .708-.708L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
+              />
+            </svg>
+          </span>
+        </div>
+        <div class="box" id="chatbox">
+          <!-- Welcome Message -->
+          <div class="welcome-message" id="welcome-message">
+            <img
+              src="https://via.placeholder.com/60"
+              alt="Assistant Icon"
+              class="welcome-icon"
+            />
+            <h2>Assistant</h2>
+            <p>I am here to help you out</p>
+          </div>
+          <!-- Chat messages will be dynamically added here -->
+          <!-- Loader Animation -->
+          <div class="loader" id="loader">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+        </div>
+        <div class="typing-area">
+          <div class="input-field">
+            <input
+              id="input-message"
+              type="text"
+              placeholder="Type your message"
+              required
+            />
+            <button id="send-button">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================
+       5. External Libraries
+       ============================ -->
+    <!-- Include DOMPurify to sanitize HTML -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@2.3.10/dist/purify.min.js"></script>
+    <!-- Include Marked.js for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <!-- ============================
+       6. JavaScript Configuration and Logic
+       ============================ -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        /* ============================
+           a. Customization Configuration
+           ============================ */
+        const chatbotConfig = {
+          /* === Content Customization === */
+          title: "Simple Chatbot", // Title displayed on the chatbot
+          titleIconUrl: "https://via.placeholder.com/40", // URL for the title icon
+          welcomeIconUrl: "https://via.placeholder.com/60", // URL for the welcome message icon
+          welcomeHeadline: "Assistant", // Headline in the welcome message
+          welcomeSubheadline: "I am here to help you out", // Subheadline in the welcome message
+          placeholderText: "Type your message", // Placeholder text in the input field
+          sendButtonText: "Send", // Text on the send button
+          endpointUrl: "https://api.planningfuture.ai/webhook/chatbot", // Server endpoint for messages
+
+          /* === Appearance Customization === */
+          // Optionally, add more customization options like themes, fonts, etc.
+
+          /* === Badge Customization === */
+          initialUnreadCount: 1, // Initial count for unread messages badge
+        };
+
+        /* ============================
+           b. Element References
+           ============================ */
+        const chatbox = document.getElementById("chatbox");
+        const inputMessage = document.getElementById("input-message");
+        const sendButton = document.getElementById("send-button");
+        const chatWidget = document.getElementById("chat-widget");
+        const chatbotContainer = document.getElementById("chatbot-container");
+        const closeChatbot = document.getElementById("close-chatbot");
+        const unreadCount = document.getElementById("unread-count");
+        const loader = document.getElementById("loader");
+        const welcomeMessage = document.getElementById("welcome-message");
+        const titleIcon = document.querySelector(".title-icon");
+        const resizeHandle = document.getElementById("resize-handle");
+
+        /* ============================
+           c. Initialize Chatbot with Configuration
+           ============================ */
+        // Set Titles and Icons
+        function initializeChatbot() {
+          // Set Title Icon
+          if (titleIcon) {
+            titleIcon.src = chatbotConfig.titleIconUrl;
+            titleIcon.alt = chatbotConfig.title + " Icon";
+          }
+
+          // Set Title Text
+          const titleText = chatbotContainer.querySelector(".title-text");
+          if (titleText) {
+            titleText.textContent = chatbotConfig.title;
+          }
+
+          // Set Welcome Message Icon
+          const welcomeIcon = welcomeMessage.querySelector(".welcome-icon");
+          if (welcomeIcon) {
+            welcomeIcon.src = chatbotConfig.welcomeIconUrl;
+            welcomeIcon.alt = chatbotConfig.welcomeHeadline + " Icon";
+          }
+
+          // Set Welcome Message Text
+          const welcomeHeadline = welcomeMessage.querySelector("h2");
+          if (welcomeHeadline) {
+            welcomeHeadline.textContent = chatbotConfig.welcomeHeadline;
+          }
+
+          const welcomeSubheadline = welcomeMessage.querySelector("p");
+          if (welcomeSubheadline) {
+            welcomeSubheadline.textContent = chatbotConfig.welcomeSubheadline;
+          }
+
+          // Set Placeholder Text
+          if (inputMessage) {
+            inputMessage.placeholder = chatbotConfig.placeholderText;
+          }
+
+          // Set Send Button Text
+          if (sendButton) {
+            sendButton.textContent = chatbotConfig.sendButtonText;
+          }
+
+          // Set Initial Unread Count
+          if (unreadCount) {
+            unreadCount.textContent = chatbotConfig.initialUnreadCount;
+          }
+        }
+
+        initializeChatbot(); // Call the initialization function
+
+        /* ============================
+           d. Generate Session ID
+           ============================ */
+        function generateSessionId() {
+          return (
+            "session-" + Date.now() + "-" + Math.floor(Math.random() * 1000000)
+          );
+        }
+
+        const sessionId = generateSessionId();
+
+        /* ============================
+           e. Chatbot State Management
+           ============================ */
+        let isChatbotOpen = false;
+
+        // Function to open chatbot
+        function openChatbotContainer() {
+          chatbotContainer.style.display = "block";
+          // Trigger reflow for animation
+          void chatbotContainer.offsetWidth;
+          chatbotContainer.classList.add("show");
+          chatbotContainer.classList.remove("hide");
+          isChatbotOpen = true;
+          // Hide unread messages badge
+          unreadCount.style.display = "none";
+          // Hide chat widget icon with animation
+          chatWidget.classList.add("hidden");
+        }
+
+        // Function to close chatbot
+        function closeChatbotContainer() {
+          chatbotContainer.classList.add("hide");
+          chatbotContainer.classList.remove("show");
+          isChatbotOpen = false;
+          // Wait for animation to finish before hiding
+          setTimeout(() => {
+            if (!isChatbotOpen) {
+              chatbotContainer.style.display = "none";
+            }
+          }, 300);
+          // Show chat widget icon with animation
+          chatWidget.classList.remove("hidden");
+        }
+
+        // Toggle chatbot on chat widget icon click
+        chatWidget.addEventListener("click", function () {
+          if (isChatbotOpen) {
+            closeChatbotContainer();
+          } else {
+            openChatbotContainer();
+          }
+        });
+
+        // Close chatbot on close button click
+        closeChatbot.addEventListener("click", function () {
+          closeChatbotContainer();
+        });
+
+        /* ============================
+           f. Messaging Functionality
+           ============================ */
+        // Send message on button click
+        sendButton.addEventListener("click", function () {
+          const message = inputMessage.value.trim();
+          if (message !== "") {
+            // Display user's message
+            addMessageToChatbox(message, "right");
+            // Clear input
+            inputMessage.value = "";
+            // Send message to server
+            sendMessageToServer(message);
+          }
+        });
+
+        // Send message on Enter key press
+        inputMessage.addEventListener("keypress", function (event) {
+          if (event.key === "Enter") {
+            event.preventDefault(); // Prevent form submission
+            sendButton.click();
+          }
+        });
+
+        // Function to add messages to chatbox
+        function addMessageToChatbox(message, side) {
+          const item = document.createElement("div");
+          item.classList.add("item");
+
+          if (side === "right") {
+            item.classList.add("right");
+          }
+
+          if (side === "left") {
+            item.classList.add("left");
+            const icon = document.createElement("div");
+            icon.classList.add("icon");
+            // Chatbot Icon SVG
+            const svg = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "svg"
+            );
+            svg.setAttribute("fill", "currentColor");
+            svg.setAttribute("viewBox", "0 0 16 16");
+            svg.setAttribute("width", "24");
+            svg.setAttribute("height", "24");
+            svg.setAttribute("aria-label", "Chatbot Icon");
+            svg.setAttribute("role", "img");
+
+            const path = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "path"
+            );
+            path.setAttribute(
+              "d",
+              "M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"
+            );
+            svg.appendChild(path);
+            icon.appendChild(svg);
+            item.appendChild(icon);
+          }
+
+          const msg = document.createElement("div");
+          msg.classList.add("msg");
+
+          if (side === "left") {
+            // Attempt to parse message as JSON
+            try {
+              message = JSON.parse(message);
+            } catch (e) {
+              // If parsing fails, keep as string
+            }
+
+            // Parse Markdown and sanitize HTML
+            const htmlContent = marked.parse(message);
+            const sanitizedMessage = DOMPurify.sanitize(htmlContent);
+
+            const p = document.createElement("p");
+            p.innerHTML = sanitizedMessage; // Use innerHTML to retain formatting
+            msg.appendChild(p);
+          } else {
+            // User message
+            const p = document.createElement("p");
+            p.textContent = message;
+            msg.appendChild(p);
+          }
+
+          item.appendChild(msg);
+          chatbox.appendChild(item);
+          chatbox.scrollTop = chatbox.scrollHeight;
+        }
+
+        // Function to send message to server
+        function sendMessageToServer(message) {
+          // Show loader
+          showLoader();
+
+          // Server endpoint
+          const endpoint = chatbotConfig.endpointUrl;
+
+          fetch(endpoint, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ message: message, sessionId: sessionId }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              // Hide loader
+              hideLoader();
+
+              // Display server's response
+              const reply = data.reply;
+              addMessageToChatbox(reply, "left");
+
+              // If chatbot is closed, show unread badge
+              if (!isChatbotOpen) {
+                unreadCount.style.display = "block";
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              hideLoader();
+              addMessageToChatbox(
+                "Error: Unable to receive a response from the server.",
+                "left"
+              );
+            });
+        }
+
+        // Function to show loader
+        function showLoader() {
+          loader.classList.add("show");
+          chatbox.scrollTop = chatbox.scrollHeight;
+        }
+
+        // Function to hide loader
+        function hideLoader() {
+          loader.classList.remove("show");
+        }
+
+        /* ============================
+           g. Resizable Chatbot Functionality
+           ============================ */
+        (function () {
+          let isResizing = false;
+          let lastDownX = 0;
+
+          // Function to calculate maxWidth as 90% of viewport width
+          function getMaxWidth() {
+            return window.innerWidth * 0.9; // 90% of viewport width
+          }
+
+          // Initial settings
+          let minWidth = 300; // Minimum width in pixels
+
+          // Function to update maxWidth on window resize
+          function updateMaxWidth() {
+            // Ensure maxWidth doesn't exceed 90% of viewport width
+            const maxWidth = getMaxWidth();
+            // Update chatbot container's max-width in CSS
+            chatbotContainer.style.maxWidth = maxWidth + "px";
+          }
+
+          // Call updateMaxWidth initially and on resize
+          updateMaxWidth();
+          window.addEventListener("resize", updateMaxWidth);
+
+          resizeHandle.addEventListener("mousedown", function (e) {
+            if (window.innerWidth <= 600) return; // Disable resizing on mobile
+            isResizing = true;
+            lastDownX = e.clientX;
+            document.body.style.cursor = "ew-resize";
+            document.body.style.userSelect = "none";
+          });
+
+          document.addEventListener("mousemove", function (e) {
+            if (!isResizing) return;
+            const offsetRight = window.innerWidth - e.clientX - 20; // 20px is the right margin
+            let newWidth = window.innerWidth - e.clientX - 20;
+
+            const maxWidth = getMaxWidth();
+
+            if (newWidth < minWidth) {
+              newWidth = minWidth;
+            } else if (newWidth > maxWidth) {
+              newWidth = maxWidth;
+            }
+
+            chatbotContainer.style.width = newWidth + "px";
+          });
+
+          document.addEventListener("mouseup", function (e) {
+            if (isResizing) {
+              isResizing = false;
+              document.body.style.cursor = "default";
+              document.body.style.userSelect = "auto";
+            }
+          });
+        })();
+      });
+    </script>
+  </body>
+</html>
