@@ -11,30 +11,30 @@
 
       :root {
         /* === Colors === */
-        --primary-color: #007bff; /* Primary brand color */
+        --primary-color: #f15662; /* Cambiato da #007bff a #f15662 */
         --background-color: #fff; /* Chatbot background color */
         --text-color: #333; /* Default text color */
         --user-message-bg: #efefef; /* User message background */
-        --assistant-message-bg: #007bff; /* Assistant message background */
-        --close-button-color: #ff0000; /* Close button hover color */
+        --assistant-message-bg: #f15662; /* Cambiato da #007bff a #f15662 */
+        --close-button-color: #f15662; /* Cambiato da #ff0000 a #f15662 */
         --badge-bg-color: red; /* Unread badge background */
         --badge-text-color: white; /* Unread badge text color */
 
         /* === Fonts === */
         --font-family: "Poppins", sans-serif;
-        --font-size-base: 1rem; /* Base font size */
-        --font-size-small: 0.9rem; /* Small font size for messages */
-        --font-size-title: 1.2rem; /* Title font size */
-        --font-size-welcome: 0.875rem; /* Welcome message font size */
+        --font-size-base: 14px; /* Cambiato da 1rem a 14px */
+        --font-size-small: 12px; /* Cambiato da 0.9rem a 12px */
+        --font-size-title: 16px; /* Cambiato da 1.2rem a 16px */
+        --font-size-welcome: 10px; /* Cambiato da 0.875rem a 10px */
 
         /* === Sizes === */
-        --chatbot-width: 30vw; /* Initial chatbot width */
-        --chatbot-height: 80vh; /* Chatbot height */
-        --chat-widget-size: 4rem; /* Chat widget icon size */
+        --chatbot-width: 320px; /* Cambiato da 30vw a 320px */
+        --chatbot-height: 80vh; /* Rimane 80vh */
+        --chat-widget-size: 55px; /* Cambiato da 4rem a 55px */
 
         /* === Others === */
-        --border-radius: 10px; /* Border radius for chatbot */
-        --box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Chatbot shadow */
+        --border-radius: 5px; /* Cambiato da 10px a 5px */
+        --box-shadow: 0 0 8px rgba(0, 0, 0, 0.1); /* Cambiato da 10px a 8px */
       }
 
       /* ============================
@@ -53,6 +53,7 @@
 
       body {
         font-family: var(--font-family);
+        font-size: var(--font-size-base);
       }
 
       /* Chatbot Container */
@@ -122,14 +123,14 @@
         flex-shrink: 0;
         display: flex;
         align-items: center;
-        padding: 0 10px;
+        padding: 0 8px; /* Cambiato da 10px a 8px */
       }
 
       /* Title Icon */
       .title-icon {
-        width: 2.5rem;
-        height: 2.5rem;
-        margin-right: 10px;
+        width: 35px; /* Cambiato da 40px a 35px */
+        height: 35px; /* Cambiato da 40px a 35px */
+        margin-right: 8px; /* Cambiato da 10px a 8px */
         border-radius: 50%;
         object-fit: cover;
       }
@@ -140,13 +141,13 @@
         text-align: left;
         font-weight: bold;
         flex-grow: 1;
-        font-size: var(--font-size-title);
+        font-size: var(--font-size-title); /* Aggiornato */
       }
 
       /* Close Button */
       .wrapper .title #close-chatbot {
         position: absolute;
-        right: 15px;
+        right: 12px; /* Cambiato da 15px a 12px */
         top: 50%;
         transform: translateY(-50%);
         cursor: pointer;
@@ -165,7 +166,7 @@
       /* Chat Messages Box */
       .wrapper .box {
         border: 1px solid #efefef;
-        padding: 10px 15px;
+        padding: 12px 18px; /* Cambiato da 10px 15px a 12px 18px */
         flex: 1;
         overflow-y: auto;
         background-color: #f9f9f9;
@@ -174,7 +175,7 @@
 
       .wrapper .box .item {
         display: flex;
-        margin: 10px 0;
+        margin: 12px 0; /* Cambiato da 10px a 12px */
         animation: fadeIn 0.3s ease;
       }
 
@@ -197,28 +198,29 @@
       .wrapper .box .item.left .icon {
         background: var(--primary-color);
         color: white;
-        width: 2.5rem;
-        height: 2.5rem;
+        width: 35px; /* Cambiato da 40px a 35px */
+        height: 35px; /* Cambiato da 40px a 35px */
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-right: 10px;
+        margin-right: 8px; /* Cambiato da 10px a 8px */
       }
 
       .wrapper .box .item.left .msg {
         background: var(--assistant-message-bg);
         color: white;
         border-radius: 10px;
-        max-width: 60%;
-        padding: 10px;
+        max-width: 65%; /* Cambiato da 60% a 65% */
+        padding: 12px; /* Cambiato da 10px a 12px */
         word-wrap: break-word;
+        font-size: var(--font-size-small); /* Cambiato da 16px a 14px */
       }
 
-      /* Ensure <p> inherits color and reduce font size */
+      /* Ensure <p> inherits color and remove margin */
       .wrapper .box .item.left .msg p {
         color: inherit;
-        font-size: var(--font-size-small); /* Adjusted from default */
+        margin: 0;
       }
 
       /* User Message Styling */
@@ -230,9 +232,10 @@
         background: var(--user-message-bg);
         color: var(--text-color);
         border-radius: 10px;
-        max-width: 60%;
-        padding: 10px;
+        max-width: 65%; /* Cambiato da 60% a 65% */
+        padding: 12px; /* Cambiato da 10px a 12px */
         word-wrap: break-word;
+        font-size: var(--font-size-small); /* Cambiato da 16px a 14px */
       }
 
       /* Remove icon for user messages */
@@ -240,19 +243,14 @@
         display: none;
       }
 
-      /* Reduce user message font size */
-      .wrapper .box .item.right .msg p {
-        font-size: var(--font-size-small); /* Adjusted from default */
-      }
-
       /* Typing Area */
       .wrapper .typing-area {
         width: 100%;
         background: #efefef;
-        height: 3rem;
+        height: 50px; /* Cambiato da 3rem a 50px */
         display: flex;
         align-items: center;
-        padding: 0 10px;
+        padding: 8px; /* Cambiato da 10px a 8px */
         flex-shrink: 0;
       }
 
@@ -263,13 +261,14 @@
 
       .wrapper .typing-area .input-field input {
         width: 100%;
-        padding: 0.5rem 3rem 0.5rem 0.5rem;
+        padding: 8px; /* Cambiato da 0.5rem 3rem 0.5rem 0.5rem a 8px */
         border: 1px solid transparent;
         border-radius: 3px;
         outline: none;
+        padding-right: 60px; /* Cambiato da 3rem a 60px */
         font-family: var(--font-family);
+        font-size: var(--font-size-small); /* Cambiato da 1rem a 14px */
         transition: 0.3s all ease;
-        font-size: 1rem;
       }
 
       .wrapper .typing-area .input-field input:focus {
@@ -279,11 +278,11 @@
       .wrapper .typing-area .input-field button {
         position: absolute;
         top: 50%;
-        right: 10px;
+        right: 8px; /* Cambiato da 10px a 8px */
         transform: translateY(-50%);
         background: transparent;
         border: 1px solid var(--primary-color);
-        padding: 0.3rem 0.7rem;
+        padding: 4px 8px; /* Cambiato da 0.3rem 0.7rem a 4px 8px */
         border-radius: 3px;
         color: var(--primary-color);
         outline: none;
@@ -291,7 +290,7 @@
         opacity: 0;
         pointer-events: none;
         transition: 0.3s all ease;
-        font-size: var(--font-size-small);
+        font-size: var(--font-size-small); /* Cambiato da 0.9rem a 14px */
       }
 
       .wrapper .typing-area .input-field button:hover {
@@ -319,7 +318,7 @@
         justify-content: center;
         cursor: pointer;
         z-index: 9999;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.3); /* Cambiato da 10px a 8px */
         transition: opacity 0.3s ease, transform 0.3s ease;
 
         /* Add refined bounce animation */
@@ -351,12 +350,12 @@
       }
 
       #chat-widget svg {
-        width: 1.875rem;
-        height: 1.875rem;
+        width: 25px; /* Cambiato da 30px a 25px */
+        height: 25px; /* Cambiato da 30px a 25px */
       }
 
       #chat-widget:hover {
-        background-color: darken(var(--primary-color), 10%);
+        background-color: #c14551; /* Cambiato da darken(var(--primary-color), 10%) a #c14551 */
       }
 
       /* Loader Styling */
@@ -365,7 +364,7 @@
         justify-content: center;
         align-items: center;
         position: absolute;
-        bottom: 4rem; /* Position above the typing area */
+        bottom: 60px; /* Cambiato da 4rem a 60px */
         left: 50%;
         transform: translateX(-50%);
       }
@@ -375,9 +374,9 @@
       }
 
       .loader .dot {
-        width: 0.5rem;
-        height: 0.5rem;
-        margin: 0 0.2rem;
+        width: 6px; /* Cambiato da 8px a 6px */
+        height: 6px; /* Cambiato da 8px a 6px */
+        margin: 0 1.5px; /* Cambiato da 2px a 1.5px */
         background-color: var(--primary-color);
         border-radius: 50%;
         animation: bounceDot 1.4s infinite ease-in-out both;
@@ -405,16 +404,16 @@
       /* Badge for Unread Messages */
       #chat-widget .badge {
         position: absolute;
-        top: 10px;
-        right: 10px;
+        top: 8px; /* Cambiato da 10px a 8px */
+        right: 8px; /* Cambiato da 10px a 8px */
         background: var(--badge-bg-color);
         color: var(--badge-text-color);
         border-radius: 50%;
-        width: 1.25rem;
-        height: 1.25rem;
+        width: 18px; /* Cambiato da 20px a 18px */
+        height: 18px; /* Cambiato da 20px a 18px */
         text-align: center;
-        line-height: 1.25rem;
-        font-size: 0.75rem;
+        line-height: 18px; /* Aggiornato per centrare verticalmente il testo */
+        font-size: 10px; /* Cambiato da 12px a 10px */
         display: none;
       }
 
@@ -439,26 +438,31 @@
       }
 
       .welcome-icon {
-        width: 3.75rem; /* Adjust as needed */
-        height: 3.75rem; /* Adjust as needed */
-        margin-bottom: 10px;
+        width: 50px; /* Cambiato da 60px a 50px */
+        height: 50px; /* Cambiato da 60px a 50px */
+        margin-bottom: 8px; /* Cambiato da 10px a 8px */
         border-radius: 50%;
         object-fit: cover;
       }
 
       .welcome-message h2 {
-        font-size: 1.125rem;
-        margin-bottom: 5px;
+        font-size: 16px; /* Cambiato da 18px a 16px */
+        margin-bottom: 4px; /* Cambiato da 5px a 4px */
       }
 
       .welcome-message p {
-        font-size: var(--font-size-welcome);
+        font-size: var(--font-size-welcome); /* Cambiato da 14px a 10px */
         color: #555;
       }
 
       /* Resize Handle Hover Effect */
       .resize-handle:hover {
-        background-color: rgba(0, 123, 255, 0.2);
+        background-color: rgba(
+          241,
+          86,
+          98,
+          0.2
+        ); /* Var(--primary-color) con opacità */
       }
 
       /* Responsive Design */
@@ -520,41 +524,41 @@
         }
 
         #chat-widget {
-          width: 3rem;
-          height: 3rem;
+          width: 45px; /* Cambiato da 55px a 45px */
+          height: 45px; /* Cambiato da 55px a 45px */
           animation: none; /* Remove animation for fullscreen */
         }
 
         #chat-widget svg {
-          width: 1.25rem;
-          height: 1.25rem;
+          width: 20px; /* Cambiato da 25px a 20px */
+          height: 20px; /* Cambiato da 25px a 20px */
         }
 
         .title-icon {
-          width: 2rem;
-          height: 2rem;
+          width: 25px; /* Cambiato da 35px a 25px */
+          height: 25px; /* Cambiato da 35px a 25px */
         }
 
         .welcome-icon {
-          width: 3rem;
-          height: 3rem;
+          width: 40px; /* Cambiato da 50px a 40px */
+          height: 40px; /* Cambiato da 50px a 40px */
         }
 
         .welcome-message h2 {
-          font-size: 1rem;
+          font-size: 14px; /* Cambiato da 16px a 14px */
         }
 
         .welcome-message p {
-          font-size: 0.8rem;
+          font-size: 10px; /* Cambiato da 12px a 10px */
         }
 
         .wrapper .title {
-          font-size: 1rem;
+          font-size: 16px; /* Cambiato da 18px a 16px */
         }
 
         .wrapper .typing-area .input-field button {
-          padding: 0.2rem 0.5rem;
-          font-size: 0.8rem;
+          padding: 4px 6px; /* Cambiato da 5px 8px a 4px 6px */
+          font-size: 12px; /* Cambiato da 14px a 12px */
         }
 
         /* Hide resize handle on mobile */
@@ -569,7 +573,7 @@
 
         /* Reduce typing area height */
         .wrapper .typing-area {
-          height: 3rem;
+          height: 50px;
           padding: 0 8px;
         }
 
@@ -635,14 +639,17 @@
         xmlns="http://www.w3.org/2000/svg"
         fill="currentColor"
         viewBox="0 0 16 16"
-        width="1.875rem"
-        height="1.875rem"
+        width="20px"
+        height="20px"
         aria-label="Chat Icon"
         role="img"
       >
         <path
           d="M2 0a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2.5a1 1 0 0 1 .8.4l1.9 2.533a1 1 0 0 0 1.6 0l1.9-2.533a1 1 0 0 1 .8-.4H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"
         ></path>
+        <circle cx="5.5" cy="8" r="1"></circle>
+        <circle cx="8" cy="8" r="1"></circle>
+        <circle cx="11.5" cy="8" r="1"></circle>
       </svg>
       <div class="badge" id="unread-count">1</div>
     </div>
@@ -657,13 +664,25 @@
       <div class="wrapper">
         <div class="title">
           <!-- Title Icon -->
-          <img
-            src="https://via.placeholder.com/40"
-            alt="Chatbot Icon"
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 16 16"
             class="title-icon"
-          />
+            aria-label="Chatbot Icon"
+            role="img"
+            width="35"
+            height="35"
+          >
+            <path
+              d="M2 0a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2.5a1 1 0 0 1 .8.4l1.9 2.533a1 1 0 0 0 1.6 0l1.9-2.533a1 1 0 0 1 .8-.4H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"
+            ></path>
+            <circle cx="5.5" cy="8" r="1"></circle>
+            <circle cx="8" cy="8" r="1"></circle>
+            <circle cx="11.5" cy="8" r="1"></circle>
+          </svg>
           <!-- Title Text -->
-          <span class="title-text">Simple Chatbot</span>
+          <span class="title-text">Ilenia Girolami Assistant</span>
           <!-- Close Button -->
           <span id="close-chatbot">
             <!-- Close Icon SVG -->
@@ -685,13 +704,35 @@
         <div class="box" id="chatbox">
           <!-- Welcome Message -->
           <div class="welcome-message" id="welcome-message">
-            <img
-              src="https://via.placeholder.com/60"
-              alt="Assistant Icon"
+            <!-- Robot SVG Icon -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              viewBox="0 0 64 64"
               class="welcome-icon"
-            />
-            <h2>Assistant</h2>
-            <p>I am here to help you out</p>
+              aria-label="Assistant Icon"
+              role="img"
+              width="50"
+              height="50"
+            >
+              <rect x="8" y="12" width="48" height="40" rx="8" ry="8" fill="#f15662" stroke="#fff" stroke-width="2"/>
+              <!-- Antenna -->
+              <line x1="32" y1="12" x2="32" y2="4" stroke="#fff" stroke-width="2" />
+              <circle cx="32" cy="4" r="2" fill="#fff" />
+              <!-- Eyes -->
+              <circle cx="20" cy="24" r="4" fill="#fff" />
+              <circle cx="44" cy="24" r="4" fill="#fff" />
+              <!-- Mouth -->
+              <rect x="20" y="36" width="24" height="4" rx="2" ry="2" fill="#fff" />
+              <!-- Arms -->
+              <rect x="0" y="20" width="8" height="24" rx="4" ry="4" fill="#f15662" stroke="#fff" stroke-width="2"/>
+              <rect x="56" y="20" width="8" height="24" rx="4" ry="4" fill="#f15662" stroke="#fff" stroke-width="2"/>
+              <!-- Legs -->
+              <rect x="20" y="52" width="8" height="8" rx="2" ry="2" fill="#f15662" stroke="#fff" stroke-width="2"/>
+              <rect x="36" y="52" width="8" height="8" rx="2" ry="2" fill="#f15662" stroke="#fff" stroke-width="2"/>
+            </svg>
+            <h2>Sono l'assistente dell'architetto Girolami</h2>
+            <p>Parlami del tuo progetto</p>
           </div>
           <!-- Chat messages will be dynamically added here -->
           <!-- Loader Animation -->
@@ -733,20 +774,20 @@
            ============================ */
         const chatbotConfig = {
           /* === Content Customization === */
-          title: "Simple Chatbot", // Title displayed on the chatbot
-          titleIconUrl: "https://via.placeholder.com/40", // URL for the title icon
-          welcomeIconUrl: "https://via.placeholder.com/60", // URL for the welcome message icon
-          welcomeHeadline: "Assistant", // Headline in the welcome message
-          welcomeSubheadline: "I am here to help you out", // Subheadline in the welcome message
-          placeholderText: "Type your message", // Placeholder text in the input field
-          sendButtonText: "Send", // Text on the send button
-          endpointUrl: "https://api.planningfuture.ai/webhook/chatbot", // Server endpoint for messages
+          title: "Ilenia Girolami Assistant", // Aggiornato dal vecchio valore
+          titleIconUrl: "", // Ora sostituito con SVG
+          welcomeIconUrl: "", // Ora sostituito con SVG
+          welcomeHeadline: "Sono l'assistente dell'architetto Girolami", // Aggiornato
+          welcomeSubheadline: "Parlami del tuo progetto", // Aggiornato
+          placeholderText: "Type your message", // Rimane invariato
+          sendButtonText: "Send", // Rimane invariato
+          endpointUrl: "https://api.planningfuture.ai/webhook/chatbotGirolami", // Aggiornato dall'endpoint precedente
 
           /* === Appearance Customization === */
           // Optionally, add more customization options like themes, fonts, etc.
 
           /* === Badge Customization === */
-          initialUnreadCount: 1, // Initial count for unread messages badge
+          initialUnreadCount: 1, // Rimane invariato
         };
 
         /* ============================
@@ -769,23 +810,10 @@
            ============================ */
         // Set Titles and Icons
         function initializeChatbot() {
-          // Set Title Icon
-          if (titleIcon) {
-            titleIcon.src = chatbotConfig.titleIconUrl;
-            titleIcon.alt = chatbotConfig.title + " Icon";
-          }
-
           // Set Title Text
           const titleText = chatbotContainer.querySelector(".title-text");
           if (titleText) {
             titleText.textContent = chatbotConfig.title;
-          }
-
-          // Set Welcome Message Icon
-          const welcomeIcon = welcomeMessage.querySelector(".welcome-icon");
-          if (welcomeIcon) {
-            welcomeIcon.src = chatbotConfig.welcomeIconUrl;
-            welcomeIcon.alt = chatbotConfig.welcomeHeadline + " Icon";
           }
 
           // Set Welcome Message Text
