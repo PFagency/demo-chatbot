@@ -1010,6 +1010,8 @@
               "Content-Type": "application/json",
             },
             body: JSON.stringify({ message: message, sessionId: sessionId }),
+            mode: "cors", // Aggiungi questa riga
+            credentials: "include", // Aggiungi questa rig
           })
             .then((response) => response.json())
             .then((data) => {
